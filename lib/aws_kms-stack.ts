@@ -63,6 +63,7 @@ export class AwsKmsStack extends cdk.Stack {
       ],
     }));
 
+    //Create Lambda Layer for cryptography
     //Create Lambda Function to upload files to S3 Bucket and metadata to DynamoDB Table
     const uploadFileLambdaFunction = new lambda.Function(this, "uploadFileLambdaFunction", {
       runtime: lambda.Runtime.PYTHON_3_12,
@@ -70,6 +71,7 @@ export class AwsKmsStack extends cdk.Stack {
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../lib/assets/lambda/uploadLambda")),
       role: lambdaRole,
+      timeout: cdk.Duration.seconds(30),
       environment: {
         "BUCKET_NAME": s3BucketKMS.bucketName,
         "TABLE_NAME": dynamoDBMetadataTable.tableName,
@@ -83,6 +85,7 @@ export class AwsKmsStack extends cdk.Stack {
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../lib/assets/lambda/downloadLambda")),
       role: lambdaRole,
+      timeout: cdk.Duration.seconds(30),
       environment: {
         "BUCKET_NAME": s3BucketKMS.bucketName,
         "TABLE_NAME": dynamoDBMetadataTable.tableName,
